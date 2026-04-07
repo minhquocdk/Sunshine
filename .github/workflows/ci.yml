@@ -49,6 +49,7 @@ jobs:
                 -DSUNSHINE_ENABLE_CUDA=OFF \
                 -DSUNSHINE_ENABLE_DRM_AMDGPU=ON \
                 -DSUNSHINE_ENABLE_VAAPI=ON \
+                -DSUNSHINE_BUILD_TESTS=OFF
                 ..
           make -j$(nproc)
 
