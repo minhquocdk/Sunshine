@@ -39,8 +39,12 @@ jobs:
       - name: Build Sunshine
         run: |
           mkdir build && cd build
-          # Build Release tối ưu hiệu năng
-          cmake -DCMAKE_BUILD_TYPE=Release ..
+          # Thêm flag tắt CUDA để tránh lỗi
+          cmake -DCMAKE_BUILD_TYPE=Release \
+                -DSUNSHINE_ENABLE_CUDA=OFF \
+                -DSUNSHINE_ENABLE_DRM_AMDGPU=ON \
+                -DSUNSHINE_ENABLE_VAAPI=ON \
+                ..
           make -j$(nproc)
 
       - name: Upload Binary Artifact
