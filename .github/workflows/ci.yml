@@ -24,8 +24,8 @@ jobs:
             libevdev libpulse libdrm libx11 libxrandr libva \
             nlohmann-json openssl avahi libvdpau miniupnpc curl \
             python python-pip python-setuptools python-jinja \
-            pipewire \
-            libayatana-appindicator libnotify # <--- Hai ông thần mới đây
+            pipewire libayatana-appindicator libnotify \
+            nodejs npm # <--- Cặp bài trùng "Web" đây rồi
 
       - name: Checkout Code
         uses: actions/checkout@v4
