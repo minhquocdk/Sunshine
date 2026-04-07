@@ -18,11 +18,13 @@ jobs:
 
       - name: Install Build Dependencies
         run: |
-          # Cài đặt các gói cơ bản và các deps mà Sunshine yêu cầu
-          pacman -S --noconfirm git base-devel cmake boost ffmpeg \
-          libevdev libpulse libdrm libx11 libxrandr libva \
-          nlohmann-json openssl avahi libvdpau miniupnpc curl \
-          python python-pip python-setuptools python-jinja
+          pacman-key --init && pacman-key --populate archlinux
+          pacman -Syu --noconfirm \
+            git base-devel cmake boost ffmpeg \
+            libevdev libpulse libdrm libx11 libxrandr libva \
+            nlohmann-json openssl avahi libvdpau miniupnpc curl \
+            python python-pip python-setuptools python-jinja \
+            pipewire  # <--- Thêm ông này vào
 
       - name: Checkout Code
         uses: actions/checkout@v4
