@@ -25,7 +25,8 @@ jobs:
             nlohmann-json openssl avahi libvdpau miniupnpc curl \
             python python-pip python-setuptools python-jinja \
             pipewire libayatana-appindicator libnotify \
-            nodejs npm # <--- Cặp bài trùng "Web" đây rồi
+            nodejs npm \
+            doxygen graphviz # <--- Thêm hai ông này vào
 
       - name: Checkout Code
         uses: actions/checkout@v4
