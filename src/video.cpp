@@ -2204,7 +2204,10 @@ namespace video {
                           colorspace.colorspace == colorspace_e::rec709    ? "SDR (Rec. 709)" :
                           colorspace.colorspace == colorspace_e::bt2020sdr ? "SDR (Rec. 2020)" :
                                                                              "unknown";
-
+      if (colorspace.colorspace == colorspace_e::rec601) {
+        colorspace.colorspace = colorspace_e::rec709; // Ép lên 709
+        BOOST_LOG(warning) << "FORCING BT.709 on Intel UHD 620";
+      }
       BOOST_LOG(info) << "Color coding: " << color_coding;
       BOOST_LOG(info) << "Color depth: " << colorspace.bit_depth << "-bit";
       BOOST_LOG(info) << "Color range: " << (colorspace.full_range ? "JPEG" : "MPEG");
