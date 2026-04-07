@@ -25,8 +25,9 @@ jobs:
             nlohmann-json openssl avahi libvdpau miniupnpc curl \
             python python-pip python-setuptools python-jinja \
             pipewire libayatana-appindicator libnotify \
-            nodejs npm \
-            doxygen graphviz # <--- Thêm hai ông này vào
+            nodejs npm doxygen graphviz \
+            wayland wayland-protocols libxkbcommon \
+            numactl # <--- ĐÂY CHÍNH LÀ NÓ!
 
       - name: Checkout Code
         uses: actions/checkout@v4
