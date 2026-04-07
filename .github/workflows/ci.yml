@@ -1,19 +1,50 @@
-name: CI-Custom-Arch
-
-on:
-  workflow_dispatch: # Để bạn bấm nút chạy tay
+name: Simple-Arch-Build-Fixed
+on: workflow_dispatch
 
 jobs:
-  release-setup:
-    # Giữ lại job này vì build-archlinux cần "outputs" từ nó
-    uses: LizardByte/.github/.github/workflows/__call-github-env.yml@master
-    
-  build-archlinux:
-    name: Archlinux
-    needs: release-setup
-    permissions:
-      contents: read
-    uses: ./.github/workflows/ci-archlinux.yml
-    with:
-       release_commit: ${{ needs.release-setup.outputs.release_commit }}
-       release_version: ${{ needs.release-setup.outputs.release_version }}
+  build:
+    runs-on: ubuntu-latest
+    container: 
+      image: archlinux:latest
+      options: --privileged  # Một số lệnh hệ thống của Arch cần quyền này trong container
+
+    steps:
+      - name: Update System & Fix Keyring
+        run: |
+          # Sửa lỗi keyring cũ trong image để pacman hoạt động
+          pacman-key --init
+          pacman-key --populate archlinux
+          pacman -Syu --noconfirm
+
+      - name: Install Build Dependencies
+        run: |
+          # Cài đặt các gói cơ bản và các deps mà Sunshine yêu cầu
+          pacman -S --noconfirm git base-devel cmake boost ffmpeg \
+          libevdev libpulse libdrm libx11 libxrandr libva \
+          nlohmann-json openssl avahi libvdpau
+          # Lưu ý: Bỏ qua cuda nếu bạn chỉ dùng RX 5600 XT và i5-8365U
+
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Apply Color Fix (BT.601 to BT.709)
+        run: |
+          # Chỉ chạy sau khi đã Checkout
+          # Tìm và thay thế logic ép màu trong src/video.cpp
+          sed -i 's/colorspace.colorspace == colorspace_e::rec601/colorspace.colorspace == colorspace_e::rec709/g' src/video.cpp
+          echo "Applied BT.709 hardcode fix to src/video.cpp"
+
+      - name: Build Sunshine
+        run: |
+          mkdir build && cd build
+          # Build Release tối ưu hiệu năng
+          cmake -DCMAKE_BUILD_TYPE=Release ..
+          make -j$(nproc)
+
+      - name: Upload Binary Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sunshine-cachyos-fixed
+          path: build/sunshine
